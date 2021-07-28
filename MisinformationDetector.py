@@ -11,9 +11,12 @@ class MisinformationDetector():
 		self.tV = None
 
 	def train(self):
+		#This training method will not run. This method within the Github repository is merely to display the code
+		
+		raise NotImplementedError("This training method will not run. This method within the Github repository is merely to display the code")
 		print ("Program Log: Training has begun.")
 		
-		self.data = pd.read_csv(r'Downloads\train.csv')
+		self.data = pd.read_csv(r'train.csv')
 		self.data = self.data.dropna(how='any',axis=0)
 
 		self.tV = TfidfVectorizer(stop_words='english', max_df=0.7)
