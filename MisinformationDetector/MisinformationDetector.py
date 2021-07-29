@@ -4,19 +4,19 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import PassiveAggressiveClassifier
 from sklearn.metrics import accuracy_score,confusion_matrix
 from wikipedia.exceptions import DisambiguationError, PageError
+from wikipedia.wikipedia import summary
 
 class MisinformationDetector():
 	def __init__(self):
 		self.model = None
 		self.tV = None
 
-	def train(self):
+	def train(self):		
 		#This training method will not run. This method within the Github repository is merely to display the code
 		
 		raise NotImplementedError("This training method will not run. This method within the Github repository is merely to display the code")
-		print ("Program Log: Training has begun.")
 		
-		self.data = pd.read_csv(r'train.csv')
+		self.data = pd.read_csv(r'home/train.csv')
 		self.data = self.data.dropna(how='any',axis=0)
 
 		self.tV = TfidfVectorizer(stop_words='english', max_df=0.7)
@@ -60,7 +60,7 @@ class MisinformationDetector():
 		try:
 			with open('Pickled_Misinformation_PAC_Model', 'rb') as file:  
 				self.model = pickle.load(file)
-			print ('Program Log: Model successfully loaded.')
+			# print ('Program Log: Model successfully loaded.')
 		except FileNotFoundError:
 			print ('Program Log: File not loaded because file was not found.')
 		
@@ -68,20 +68,23 @@ class MisinformationDetector():
 		try:
 			with open('Pickled_Misinformation_TFIDF_Vectorizer', 'rb') as file:  
 				self.tV = pickle.load(file)
-			print ('Program Log: Vectorizer successfully loaded.')
+			# print ('Program Log: Vectorizer successfully loaded.')
 		except FileNotFoundError:
 			print ('Program Log: File not loaded because file was not found.')
 
 	def think(self,string):
 		if not self.model or not self.tV:
 			raise TypeError('Model or Vectorizer is of type None. Please define by training or loading the model first.')
-		print ('Program Log: Model has predicted',self.model.predict(self.tV.transform([string])))
+		# print ('Program Log: Model has predicted',self.model.predict(self.tV.transform([string])))
 		return(self.model.predict(self.tV.transform([string])))
 	
-	def search(self,term):
+	def search(self,news):
 		try:
-			return (wikipedia.summary(term))
+			term = wikipedia.suggest(news)
+			if term == None:
+				return ("1"+wikipedia.summary(news))
+			return ("2"+wikipedia.page(title=term).url)
 		except PageError:
-			return ("Page not found")
+			return ("Uh oh, Wikipedia returned an error. The page this query requested does not exist.")
 		except DisambiguationError:
-			return ("Too many results for page or query too vague")
+			return ("Uh oh, Wikipedia returned an error. This query has too many results, which is likely caused by vagueness.")
