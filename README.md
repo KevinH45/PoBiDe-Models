@@ -24,15 +24,8 @@ Though the website design seems relatively simple, the inner workings of the pro
 As one may see, there are two parts to this problem, each requiring two detectors, a Misinformation, and Political Bias Detector. 
 
 The Misinformation Detector uses a [TF-IDF Vectorizer](https://medium.com/@cmukesh8688/tf-idf-vectorizer-scikit-learn-dbc0244a911a) to transform the dataset into a way that can be processed by the model, or a sparse matrix of TF-IDF features. The model and vectorizer are trained and saved onto pickled files. The model and vectorizer can be loaded and can predict text inputs in split-second time.
-
-The political bias detector uses Google’s BERT to transform data. This transformed data is then fed into an LSTM layer which feeds its output into an FC layer, which classifies the data.
-
-
-
-
-
-
-
+ 
+The Political Biases Classifier uses Google's BERT, followed by an LSTM layer, and some simple NN layers. Those final layers following BERT are the classifier. This classifier consumes the output hidden state tensors from BERT — using them to predict whether the input statement is Liberal, Conservative or Neutral. The pre-trained BERT model used is ['bert-base-uncased'](https://huggingface.co/bert-base-uncased), and [transformers.AutoTokenizer](https://huggingface.co/transformers/model_doc/auto.html#autotokenizer) is used to convert the input data to the form which can be processed by the pre-trained BERT model.
 
 # Challenges we ran into:
 
